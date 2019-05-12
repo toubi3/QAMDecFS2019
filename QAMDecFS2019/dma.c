@@ -73,7 +73,7 @@ void vInitDMA()
 	// channel 0
 	// **** TODO: reset dma channels
 	DMA.CH0.REPCNT		= 0;
-	DMA.CH0.CTRLA		=  DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 2 byte 12 bit word
+	DMA.CH0.CTRLA		=  DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 1 byte (8 bit word)
 	DMA.CH0.CTRLB		= 0x1;
 	DMA.CH0.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction
@@ -88,7 +88,7 @@ void vInitDMA()
 
 	// channel 1
 	DMA.CH1.REPCNT		= 0;
-	DMA.CH1.CTRLA		= DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 2 byte 12 bit word
+	DMA.CH1.CTRLA		= DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 1 byte (8 bit word)
 	DMA.CH1.CTRLB		= 0x1;
 	DMA.CH1.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction

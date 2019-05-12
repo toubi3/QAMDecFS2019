@@ -47,57 +47,46 @@ void vTask_DMAHandler(void *pvParameters)
 		{
 			//Do stuff with BufferA
 			//buffer_a ....
+			count_array_a++; // test number of write cycles
 			for (i=0;i<2047;i++)//Detect signal 
 			{
 				if (buffer_a[i] >= 20)
 				{
 					xResult = xEventGroupSetBits(
-								xSignalProcessEventGroup,   /* The event group being updated. */
-								Process_Signal_BufferB /* The bits being set. */
+								xSignalProcessEventGroup,		/* The event group being updated. */
+								Process_Signal_BufferB			/* The bits being set. */
 								);
-					if( xResult & Process_Signal_BufferB )
+					if( xResult & Process_Signal_BufferB )		//test if Eventgroup bit is set
 					{
-						count_array_a++;
+						//count_array_a++;
 					}
 					count_after_peak = 0;
-				//i = 0;
 				}
-				else
+				
+				else											// if value is under threshold, it shall stop calculating the signal
 				{
-					count_after_peak++;
-					if (count_after_peak >=100)
-					{
-						//kein signal mehr, stoppe berechnung
+					count_after_peak++;							// wait 100 counts to make sure that signal has stopped
+					if (count_after_peak >=100)					// no signal stop calculating -> set event bits to 0
+					{											// no signal stop calculating -> set event bits to 0
+						xResult = xEventGroupClearBits(			// clear event bits
+											xSignalProcessEventGroup,
+											Process_Signal_BufferA|Process_Signal_BufferB
+											);												
 					}
 				}
-					
-				//{
-					//PORTE.OUT &= ~0x02;
-					//PORTE.OUT |= 0x01;
-					//i = 0;
-				//}
-				//else
-				//{
-					//PORTE.OUT &= ~0x01;
-					//PORTE.OUT |= 0x02;
-					//for(n=0;n<20;n++)
-					//{
-						//wenn pegel für 20 werte kleiner als 10 ist -> kein signal mehr -> stop timer
-					//}
-				//}
 			}
 			count_buffer_a++;
 			
 			//Debug Output
 			PORTF.OUT = (PORTF.OUT & (0xFF - 0x02));
-			PORTF.OUT |= 0x04;
-			
+			PORTF.OUT |= 0x04;	
 		}
+		
 		else //When it was not DMA_EVT_GRP_BufferA, then it was probably B. Since we only use two bits!
-		{
-								
+		{						
 			//Do stuff with BufferB
 			//buffer_b ....
+			count_array_b++; // test number of write cycles
 			i = i;
 			for (i=0;i<2047;i++)
 			{				
@@ -105,35 +94,27 @@ void vTask_DMAHandler(void *pvParameters)
 				{
 				xResult = xEventGroupSetBits(
 									xSignalProcessEventGroup,   /* The event group being updated. */
-									Process_Signal_BufferA /* The bits being set. */
-									);
-				if( xResult & Process_Signal_BufferA )
+									Process_Signal_BufferA		/* The bits being set. */
+									);	
+				}
+				if(xResult & Process_Signal_BufferA)			//test if Eventgroup bit is set
+				{
 					{
-						count_array_b++;
+						//count_array_b++;
 					}
 					count_buffer_a = 0;
 				}
-				else
+				else											// if value is under threshold, it shall stop calculating the signal
 				{
-					count_after_peak++;
-					if (count_after_peak >=100)
-					{
-						//kein signal mehr, stoppe berechnung
-					}
+					count_after_peak++;					
+					if (count_after_peak >=100)					// wait 100 counts to make sure that signal has stopped
+					{									
+						xResult = xEventGroupClearBits(			// clear event bits
+												xSignalProcessEventGroup,
+												Process_Signal_BufferA|Process_Signal_BufferB
+												);										// no signal stop calculating -> set event bits to 0
+						}
 				}
-				 //detect signal
-				//{
-				//	i = 0;
-					//PORTE.OUT &= ~0x02;
-					//PORTE.OUT |= 0x01;
-				//}
-				//else {
-					//PORTE.OUT &= ~0x01;
-					//PORTE.OUT |= 0x02;
-					//for(n=0;n<20;n++){
-						//wenn pegel für 20 werte kleiner als 10 ist -> kein signal mehr -> stop timer
-					//}
-				//}
 			}
 			count_buffer_b++;
 			//Debug Output
