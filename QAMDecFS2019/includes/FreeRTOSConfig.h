@@ -100,6 +100,7 @@ to exclude the API function. */
 
 #define INCLUDE_uxTaskGetStackHighWaterMark	1 // used to check if stack is going low
 #define	INCLUDE_xTaskGetCurrentTaskHandle	1
+#define INCLUDE_xEventGroupSetBitFromISR 1			  
 
 #define configUSE_TIMERS				1
 #define INCLUDE_xTimerPendFunctionCall	1
