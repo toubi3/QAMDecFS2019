@@ -48,7 +48,7 @@ void vTask_DMAHandler(void *pvParameters)
 			//Do stuff with BufferA
 			//buffer_a ....
 			count_array_a++; // test number of write cycles
-			for (i=0;i<2047;i++)//Detect signal 
+			for (i=0;i<2048;i++)//Detect signal 
 			{
 				if (buffer_a[i] >= 20)
 				{
@@ -87,8 +87,7 @@ void vTask_DMAHandler(void *pvParameters)
 			//Do stuff with BufferB
 			//buffer_b ....
 			count_array_b++; // test number of write cycles
-			i = i;
-			for (i=0;i<2047;i++)
+			for (i=0;i<2048;i++)
 			{				
 				if (buffer_b[i] >= 20)
 				{

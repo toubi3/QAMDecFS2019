@@ -39,7 +39,10 @@ TaskHandle_t my_read_DMA;
 TaskHandle_t my_Display;
 TaskHandle_t TaskDMAHandler;
 
-int high_peak_a, high_peak_b,low_peak_a,low_peak_b;
+int high_peak_a = 127;
+int high_peak = 127;
+int low_peak_a = 127;
+int low_peak = 127;
 int position_high_peak_a, position_high_peak_b, position_low_peak_a, position_low_peak_b;
 int count_after_high_peak, count_after_low_peak;
 int sinus_status;		// 0 = rising up; 1 = rising down
@@ -84,10 +87,9 @@ void vLedBlink(void *pvParameters) {
 }
 void vRead_DMA(void *pvParameters)
 {
-	int pos_peak,neg_peak = 0;
-	int count_array_position_H, count_array_position_L;
+	int count_array_position_H, count_array_position_L = 0;
 	int i = 0;
-	int pos_peak_array[2047], neg_peak_array[2047], position_pos_array[2047], position_neg_array[2047];
+	int pos_peak_array[2048], neg_peak_array[2048], position_array_H[2048], position_array_L[2048];
 	EventBits_t uxBits;
 	for (;;)
 	{			
@@ -98,82 +100,107 @@ void vRead_DMA(void *pvParameters)
 								pdFALSE,       /* Don't wait for both bits, either bit will do. */
 								portMAX_DELAY );/* Wait a maximum for either bit to be set. */								
 		//process signal values
-			if (uxBits & Process_Signal_BufferA) // if "BufferA" bit is set, read out bufferA
+		if (uxBits & Process_Signal_BufferA) // if "BufferA" bit is set, read out bufferA
+		{
+			i = 0;
+			for(i=0;i<3;i++)
 			{
-				for(i=0;i<2047;i++)
+				// HIGH PEAK A
+				if (buffer_a[i] > 127)
 				{
-					if (buffer_a[i] > high_peak_a)	//if buffer bigger than current high_peak
+					if (buffer_a[i] > high_peak)	//if buffer bigger than current high_peak
 					{
-						high_peak_a = buffer_a[i];	// store new peak
-						position_high_peak_a = i;	// store array position of new peak
-					}				
-					else if(100 < buffer_a[i] < high_peak_a)
-					{
-						count_after_high_peak++;	//count up -> to make sure, that it's no distortion
-						sinus_status = 1;		// status
-					}
-					if (buffer_a[i] < low_peak_a)		//if buffer bigger than current high_peak
-					{
-						low_peak_a = buffer_a[i];	// store new peak
-						position_low_peak_a = i;	// store array position of new peak
-					}
-					else if ((100 > buffer_a[i]) &&(buffer_a[i] > low_peak_a))	//if buffer value below 0 and bigger than low peak ***sinus increases***
-					{
-						count_after_low_peak++;		//count up -> to make sure, that it's no distortion
-						sinus_status = 0;		//status
-					}
-					/* store detected peak values in array:*/
-					if ((count_after_high_peak > 50))
-					{
-						if (high_peak_a > 200)
+						if (buffer_a[i] > 220)
 						{
-							pos_peak_array[count_array_position_H] = high_peak_a;					//store peak in array
-							position_pos_array[count_array_position_H] = position_high_peak_a;		//store position of peak in array
-							count_array_position_H++;												//increase array position
-							high_peak_a = 0;														//reset peak value to let it detect peaks again from 0 
+							high_peak = buffer_a[i];	// store new peak
+							position_high_peak_a = i;	// store array position of new peak
+						}
+					}	
+					else 
+					{
+						if(buffer_a[i] < 160)
+						{
+							pos_peak_array[count_array_position_H] = high_peak;	//
+							position_array_H[count_array_position_H] = position_high_peak_a;
+							count_array_position_H++;
+							high_peak = 127;
 						}
 					}
-					if (count_after_low_peak > 50)
+				}
+				// LOW PEAK	A
+				else 
+				{
+					if (buffer_a[i] < low_peak)		//if buffer bigger than current high_peak
 					{
-						if (low_peak_a < 50)
+						if (buffer_a[i] < 35)
 						{
-							neg_peak_array[count_array_position_L] = low_peak_a;
-							position_neg_array[count_array_position_L] = position_low_peak_a;
+							low_peak = buffer_a[i];	// store new peak
+							position_low_peak_a = i;	// store array position of new peak
+						}
+					}
+					else
+					{
+						if (buffer_a[i] > 100)
+						{
+							neg_peak_array[count_array_position_L] = low_peak;
+							position_array_L[count_array_position_L] = position_low_peak_a;
 							count_array_position_L++;
-							low_peak_a = 0;
+							low_peak = 127;
+						}
+					}	
+				}	
+			}
+		}
+		else if (uxBits & Process_Signal_BufferB)
+		{
+			for (i=0;i<3;i++)
+			{
+				// HIGH PEAK B
+				if (buffer_b[i] > 127)
+				{
+					if (buffer_b[i] > high_peak)	//if buffer bigger than current high_peak
+					{
+						if (buffer_b[i] > 220)
+						{
+							high_peak = buffer_b[i];	// store new peak
+							position_high_peak_b = i;	// store array position of new peak
 						}
 					}
-					
-					
+					else
+					{
+						if(buffer_b[i] < 160)
+						{
+							pos_peak_array[count_array_position_H] = high_peak;	//
+							position_array_H[count_array_position_H] = position_high_peak_b;
+							count_array_position_H++;
+							high_peak = 127;
+						}
+					}
 				}
-
-			}
-			else if (uxBits & Process_Signal_BufferB)
-			{
-				for (i=0;i<2047;i++)
+				// LOW PEAK	B				
+				else
 				{
-					if (buffer_b[i] > high_peak_b)	//if buffer bigger than current high_peak
+					if (buffer_b[i] < low_peak)		//if buffer bigger than current high_peak
 					{
-						high_peak_b = buffer_b[i];	// store new peak
-						position_high_peak_b = i;	// store array position of new peak
-					}				
-					else if(100 < buffer_b[i] < high_peak_b)
-					{
-						count_after_high_peak++;	//count up -> to make sure, that it's no distortion
-						sinus_status = 1;		// status
+						if (buffer_b[i] < 35)
+						{
+							low_peak = buffer_b[i];	// store new peak
+							position_low_peak_b = i;	// store array position of new peak
+						}
 					}
-					if (buffer_b[i] < low_peak_b)		//if buffer bigger than current high_peak
+					else
 					{
-						low_peak_b = buffer_b[i];	// store new peak
-						position_low_peak_b = i;	// store array position of new peak
-					}
-					else if ((100 > buffer_b[i]) &&(buffer_b[i] > low_peak_b))	//if buffer value below 0 and bigger than low peak ***sinus increases***
-					{
-						count_after_low_peak++;		//count up -> to make sure, that it's no distortion
-						sinus_status = 0;		//status
+						if (buffer_b[i] > 100)
+						{
+							neg_peak_array[count_array_position_L] = low_peak;
+							position_array_L[count_array_position_L] = position_low_peak_b;
+							count_array_position_L++;
+							low_peak = 127;
+						}
 					}
 				}
 			}
+		}
 		vTaskDelay(100 / portTICK_RATE_MS);
 	}
 	
@@ -184,9 +211,9 @@ void vWrite_Display(void *pvParameters){
 	{
 			vDisplayClear();
 			vDisplayWriteStringAtPos(0,0,"FreeRTOS 10.0.1");
-			vDisplayWriteStringAtPos(1,0,"buffer_a:b %d : %d",buffer_a[1],buffer_b[1]);
-			vDisplayWriteStringAtPos(2,0,"peak: %d  : %d ",high_peak_a,high_peak_b);
-			vDisplayWriteStringAtPos(3,0,"Status: %d",sinus_status);
+			vDisplayWriteStringAtPos(1,0,"a: %d b: %d",buffer_a[1],buffer_b[1]);
+			vDisplayWriteStringAtPos(2,0,"H: %d L: %d ",high_peak, low_peak);
+			vDisplayWriteStringAtPos(3,0,"Hoi");
 			vTaskStartScheduler();
 			vTaskDelay(100 / portTICK_RATE_MS);
 			
