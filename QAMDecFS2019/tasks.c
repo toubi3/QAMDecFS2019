@@ -14,12 +14,11 @@
 
 uint8_t count_buffer_a = 0;
 uint8_t count_buffer_b = 0;
-uint16_t count_array_a;
-uint16_t count_array_b;
 uint8_t position_array_a;
 uint8_t position_array_b;
-EventGroupHandle_t xDMAProcessEventGroup;
-EventGroupHandle_t xSignalProcessEventGroup;
+//EventGroupHandle_t xDMAProcessEventGroup;
+//EventGroupHandle_t xSignalProcessEventGroup;
+
 
 void vTask_DMAHandler(void *pvParameters) 
 {
@@ -47,8 +46,7 @@ void vTask_DMAHandler(void *pvParameters)
 		{
 			//Do stuff with BufferA
 			//buffer_a ....
-			count_array_a++; // test number of write cycles
-			for (i=0;i<2048;i++)//Detect signal 
+			for (i=0;i<buffer_length;i++)//Detect signal 
 			{
 				if (buffer_a[i] >= 20)
 				{
@@ -86,8 +84,7 @@ void vTask_DMAHandler(void *pvParameters)
 		{						
 			//Do stuff with BufferB
 			//buffer_b ....
-			count_array_b++; // test number of write cycles
-			for (i=0;i<2048;i++)
+			for (i=0;i<buffer_length;i++)
 			{				
 				if (buffer_b[i] >= 20)
 				{

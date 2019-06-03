@@ -11,9 +11,9 @@
 
 void vInitDMA();
 
-
-volatile uint8_t buffer_a[2048];
-volatile uint8_t buffer_b[2048];
+volatile uint8_t buffer_a[64];
+volatile uint8_t buffer_b[64];
+uint8_t buffer_length;
 
 
 

@@ -24,8 +24,6 @@ void vRead_DMA(void *pvParameters);
 
 uint8_t count_buffer_a;
 uint8_t count_buffer_b;
-uint16_t count_array_a;
-uint16_t count_array_b;
 uint8_t buffer_a_array[250];
 uint8_t buffer_b_array[250];
 
