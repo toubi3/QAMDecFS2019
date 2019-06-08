@@ -28,15 +28,15 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data>
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.edbg</avrtool>
     <avrtoolserialnumber>ATMLEDBGC04201100001</avrtoolserialnumber>
@@ -152,7 +152,10 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="dma.c">
+    <Compile Include="dma_config.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="double_buffer_read_out.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="driver\clksys_driver.c">
@@ -266,7 +269,10 @@
     <Compile Include="includes\avr_compiler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="includes\dma.h">
+    <Compile Include="includes\dma_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="includes\double_buffer_read_out.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="includes\errorHandler.h">
@@ -284,7 +290,10 @@
     <Compile Include="includes\NHD0420Driver.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="includes\tasks.h">
+    <Compile Include="includes\phase_detection.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="includes\read_peaks.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="includes\utils.h">
@@ -302,7 +311,10 @@
     <Compile Include="NHD0420Driver.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks.c">
+    <Compile Include="phase_detection.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="read_peaks.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="utils.c">

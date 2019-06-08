@@ -1,4 +1,11 @@
 
+/*
+ * dma_config.c
+ *
+ * Created: 08.06.2019 08:50:00
+ *  Author: Tobias Liesching
+ */ 
+
 #include "stdint.h"
 #include "avr_compiler.h"
 #include "pmic_driver.h"
@@ -6,14 +13,14 @@
 #include "clksys_driver.h"
 #include "sleepConfig.h"
 #include "port_driver.h"
-#include "dma.h"
-#include "tasks.h"
+#include "dma_config.h"
+#include "double_buffer_read_out.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "errorHandler.h"
 
-volatile uint8_t buffer_a[2048];
-volatile uint8_t buffer_b[2048];
+uint8_t buffer_length = 63;
 
 //Initialisiert den ADC im Freerunning Mode
 void sys_InitADC(void)
@@ -44,8 +51,6 @@ void sys_InitADC(void)
 
 void vInitDMA()
 {
-	uint8_t i = 0;
-	
 	//ADC8 PB0 Input
 	PORTB.DIRCLR = PIN0_bm;
 	PORTB.DIRCLR = PIN1_bm;
@@ -78,7 +83,7 @@ void vInitDMA()
 	DMA.CH0.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction
 	DMA.CH0.TRIGSRC		= DMA_CH_TRIGSRC_TCC1_OVF_gc;	//DMA0 gets synched by TCC1
-	DMA.CH0.TRFCNT		= 2048; // always the number of bytes, even if burst length > 1
+	DMA.CH0.TRFCNT		= 64; // always the number of bytes, even if burst length > 1
 	DMA.CH0.DESTADDR0	= (( (uint16_t) buffer_a) >> 0) & 0xFF;
 	DMA.CH0.DESTADDR1	= (( (uint16_t) buffer_a) >> 8) & 0xFF;
 	DMA.CH0.DESTADDR2	= 0;
@@ -93,7 +98,7 @@ void vInitDMA()
 	DMA.CH1.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction
 	DMA.CH1.TRIGSRC		= DMA_CH_TRIGSRC_TCC1_OVF_gc; //DMA1 gets synched by TCC1
-	DMA.CH1.TRFCNT		= 2048;
+	DMA.CH1.TRFCNT		= 64; // always the number of bytes, even if burst length > 1
 	DMA.CH1.DESTADDR0	= (( (uint16_t) buffer_b) >> 0) & 0xFF;
 	DMA.CH1.DESTADDR1	= (( (uint16_t) buffer_b) >> 8) & 0xFF;
 	DMA.CH1.DESTADDR2	= 0;

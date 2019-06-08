@@ -1,25 +1,34 @@
 /*
  * tasks.c
  *
- * Created: 05.04.2019 08:50:00
- *  Author: Claudio Hediger
+ * Created: 08.06.2019 08:50:00
+ *  Author: Tobias Liesching
  */ 
 
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "event_groups.h"
-#include "tasks.h"
-#include "dma.h"
+#include "double_buffer_read_out.h"
+#include "dma_config.h"
+#include "errorHandler.h"
 
 uint8_t count_buffer_a = 0;
 uint8_t count_buffer_b = 0;
-uint16_t count_array_a;
-uint16_t count_array_b;
 uint8_t position_array_a;
 uint8_t position_array_b;
-EventGroupHandle_t xDMAProcessEventGroup;
-EventGroupHandle_t xSignalProcessEventGroup;
+			int xtest_array_length = 96;
+			int xtest_position_H = 5;
+			int xtest_position_L = 15;
+			float xtest_array[96] = {127.000000,166.245158,201.648727,229.745158,247.784178,254.000000,247.784178,229.745158,
+				201.648727,201.648727,166.245158,127.000000, 87.754842, 52.351273, 24.254842, 6.215822, 0.000000,6.215822, 24.254842, 52.351273, 87.754842,127.000000,87.754842,
+				52.351273,24.254842,6.215822,0.000000,6.215822,24.254842,52.351273,87.754842,127.000000,166.245158,201.648727,229.745158,247.784178,254.000000,247.784178,229.745158,201.648727,166.245158,
+				0.000000,6.215822,24.254842,52.351273,87.754842,127.000000,166.245158,201.648727,229.745158,247.784178,254.000000,247.784178,229.745158,201.648727,166.245158,127.000000,87.754842,52.351273,
+				24.254842,6.215822,254.00000,0247.784178,229.745158,201.648727,166.245158,127.000000,87.754842,52.351273,24.254842,6.215822,0.000000,6.215822,24.254842,52.351273,87.754842,127.000000,166.245158,
+				201.648727,229.745158,247.784178,127.000000,166.245158,201.648727,229.745158,247.784178,254.000000,247.784178,229.745158,201.648727,166.245158,127.000000,87.754842,52.351273,24.254842,6.215822};
+//EventGroupHandle_t xDMAProcessEventGroup;
+//EventGroupHandle_t xSignalProcessEventGroup;
+
 
 void vTask_DMAHandler(void *pvParameters) 
 {
@@ -27,11 +36,12 @@ void vTask_DMAHandler(void *pvParameters)
 	xDMAProcessEventGroup = xEventGroupCreate();
 	EventBits_t uxBits;
 	BaseType_t xResult;
-	int i,n,count_after_peak = 0;
+	int i,n,no_signal_counter = 0;
 	PORTF.DIRSET = PIN1_bm; /*LED1*/
 	PORTF.DIRSET = PIN2_bm; /*LED2*/
 	PORTE.DIRSET = PIN0_bm;
 	PORTE.DIRSET = PIN1_bm;
+
 	
 	while(1)
 	{
@@ -47,32 +57,30 @@ void vTask_DMAHandler(void *pvParameters)
 		{
 			//Do stuff with BufferA
 			//buffer_a ....
-			count_array_a++; // test number of write cycles
-			for (i=0;i<2048;i++)//Detect signal 
+			for (i=0;i<buffer_length;i++)//Detect signal 
 			{
-				if (buffer_a[i] >= 20)
+				if ((xtest_array_length < 135)&(xtest_array_length > 120))		/*after testing variable is buffer_a				// if value is under threshold, it shall stop calculating the signal*/
 				{
-					xResult = xEventGroupSetBits(
-								xSignalProcessEventGroup,		/* The event group being updated. */
-								Process_Signal_BufferB			/* The bits being set. */
-								);
-					if( xResult & Process_Signal_BufferB )		//test if Eventgroup bit is set
-					{
-						//count_array_a++;
-					}
-					count_after_peak = 0;
-				}
-				
-				else											// if value is under threshold, it shall stop calculating the signal
-				{
-					count_after_peak++;							// wait 100 counts to make sure that signal has stopped
-					if (count_after_peak >=100)					// no signal stop calculating -> set event bits to 0
+					no_signal_counter++;							// wait 100 counts to make sure that signal has stopped
+					if (no_signal_counter >=100)					// no signal stop calculating -> set event bits to 0
 					{											// no signal stop calculating -> set event bits to 0
 						xResult = xEventGroupClearBits(			// clear event bits
 											xSignalProcessEventGroup,
 											Process_Signal_BufferA|Process_Signal_BufferB
 											);												
 					}
+				}
+				else
+				{
+					xResult = xEventGroupSetBits(
+					xSignalProcessEventGroup,		/* The event group being updated. */
+					Process_Signal_BufferB			/* The bits being set. */
+					);
+					if( xResult & Process_Signal_BufferB )		//test if Eventgroup bit is set
+					{
+						//count_array_a++;
+					}
+					no_signal_counter = 0;
 				}
 			}
 			count_buffer_a++;
@@ -86,8 +94,7 @@ void vTask_DMAHandler(void *pvParameters)
 		{						
 			//Do stuff with BufferB
 			//buffer_b ....
-			count_array_b++; // test number of write cycles
-			for (i=0;i<2048;i++)
+			for (i=0;i<buffer_length;i++)
 			{				
 				if (buffer_b[i] >= 20)
 				{
@@ -105,8 +112,8 @@ void vTask_DMAHandler(void *pvParameters)
 				}
 				else											// if value is under threshold, it shall stop calculating the signal
 				{
-					count_after_peak++;					
-					if (count_after_peak >=100)					// wait 100 counts to make sure that signal has stopped
+					no_signal_counter++;					
+					if (no_signal_counter >=100)					// wait 100 counts to make sure that signal has stopped
 					{									
 						xResult = xEventGroupClearBits(			// clear event bits
 												xSignalProcessEventGroup,

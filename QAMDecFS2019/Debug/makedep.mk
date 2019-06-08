@@ -2,7 +2,9 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-dma.c
+dma_config.c
+
+double_buffer_read_out.c
 
 driver\clksys_driver.c
 
@@ -40,7 +42,9 @@ mem_check.c
 
 NHD0420Driver.c
 
-tasks.c
+phase_detection.c
+
+read_peaks.c
 
 utils.c
 

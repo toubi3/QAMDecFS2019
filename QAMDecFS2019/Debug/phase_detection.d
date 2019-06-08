@@ -1,4 +1,5 @@
-main.d main.o: .././main.c ../includes/avr_compiler.h \
+phase_detection.d phase_detection.o: .././phase_detection.c \
+ ../includes/avr_compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
@@ -26,12 +27,11 @@ main.d main.o: .././main.c ../includes/avr_compiler.h \
  ../FreeRTOS/include/task.h ../FreeRTOS/include/list.h \
  ../FreeRTOS/include/queue.h ../FreeRTOS/include/event_groups.h \
  ../FreeRTOS/include/timers.h ../FreeRTOS/include/task.h \
- ../FreeRTOS/include/stack_macros.h ../includes/mem_check.h \
- ../includes/dma_config.h ../includes/init.h ../includes/utils.h \
- ../includes/errorHandler.h ../includes/NHD0420Driver.h \
- ../includes/double_buffer_read_out.h ../includes/read_peaks.h \
- ../includes/double_buffer_read_out.h ../includes/dma_config.h \
- ../includes/phase_detection.h
+ ../FreeRTOS/include/stack_macros.h ../FreeRTOS/include/semphr.h \
+ ../FreeRTOS/include/queue.h ../includes/mem_check.h ../includes/init.h \
+ ../includes/utils.h ../includes/errorHandler.h \
+ ../includes/NHD0420Driver.h ../includes/read_peaks.h \
+ ../includes/double_buffer_read_out.h ../includes/dma_config.h
 
 ../includes/avr_compiler.h:
 
@@ -109,9 +109,11 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../FreeRTOS/include/stack_macros.h:
 
-../includes/mem_check.h:
+../FreeRTOS/include/semphr.h:
 
-../includes/dma_config.h:
+../FreeRTOS/include/queue.h:
+
+../includes/mem_check.h:
 
 ../includes/init.h:
 
@@ -121,12 +123,8 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../includes/NHD0420Driver.h:
 
-../includes/double_buffer_read_out.h:
-
 ../includes/read_peaks.h:
 
 ../includes/double_buffer_read_out.h:
 
 ../includes/dma_config.h:
-
-../includes/phase_detection.h:

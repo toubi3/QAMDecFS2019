@@ -1,6 +1,7 @@
-main.d main.o: .././main.c ../includes/avr_compiler.h \
+dma_config.d dma_config.o: .././dma_config.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h \
+ ../includes/avr_compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
@@ -18,26 +19,22 @@ main.d main.o: .././main.c ../includes/avr_compiler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  ../driver/pmic_driver.h ../driver/TC_driver.h ../driver/clksys_driver.h \
- ../driver/sleepConfig.h ../driver/port_driver.h \
- ../FreeRTOS/include/FreeRTOS.h ../includes/FreeRTOSConfig.h \
- ../FreeRTOS/include/projdefs.h ../FreeRTOS/include/portable.h \
+ ../driver/sleepConfig.h ../driver/port_driver.h ../includes/dma_config.h \
+ ../includes/double_buffer_read_out.h ../FreeRTOS/include/FreeRTOS.h \
+ ../includes/FreeRTOSConfig.h ../FreeRTOS/include/projdefs.h \
+ ../FreeRTOS/include/portable.h \
  ../FreeRTOS/include/deprecated_definitions.h \
  ../FreeRTOS/include/portmacro.h ../FreeRTOS/include/mpu_wrappers.h \
  ../FreeRTOS/include/task.h ../FreeRTOS/include/list.h \
  ../FreeRTOS/include/queue.h ../FreeRTOS/include/event_groups.h \
  ../FreeRTOS/include/timers.h ../FreeRTOS/include/task.h \
- ../FreeRTOS/include/stack_macros.h ../includes/mem_check.h \
- ../includes/dma_config.h ../includes/init.h ../includes/utils.h \
- ../includes/errorHandler.h ../includes/NHD0420Driver.h \
- ../includes/double_buffer_read_out.h ../includes/read_peaks.h \
- ../includes/double_buffer_read_out.h ../includes/dma_config.h \
- ../includes/phase_detection.h
-
-../includes/avr_compiler.h:
+ ../includes/errorHandler.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h:
+
+../includes/avr_compiler.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
 
@@ -81,6 +78,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../driver/port_driver.h:
 
+../includes/dma_config.h:
+
+../includes/double_buffer_read_out.h:
+
 ../FreeRTOS/include/FreeRTOS.h:
 
 ../includes/FreeRTOSConfig.h:
@@ -107,26 +108,4 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../FreeRTOS/include/task.h:
 
-../FreeRTOS/include/stack_macros.h:
-
-../includes/mem_check.h:
-
-../includes/dma_config.h:
-
-../includes/init.h:
-
-../includes/utils.h:
-
 ../includes/errorHandler.h:
-
-../includes/NHD0420Driver.h:
-
-../includes/double_buffer_read_out.h:
-
-../includes/read_peaks.h:
-
-../includes/double_buffer_read_out.h:
-
-../includes/dma_config.h:
-
-../includes/phase_detection.h:

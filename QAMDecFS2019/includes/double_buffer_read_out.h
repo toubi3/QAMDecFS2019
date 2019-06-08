@@ -1,13 +1,13 @@
 /*
- * tasks.h
+ * double_buffer_read_out.h
  *
- * Created: 05.04.2019 09:05:34
- *  Author: Claudio Hediger
+ * Created: 08.06.2019
+ *  Author: Tobias Liesching
  */ 
 
 
-#ifndef TASKS_H_
-#define TASKS_H_
+#ifndef DOUBLE_BUFFER_READ_OUT_H_
+#define DOUBLE_BUFFER_READ_OUT_H_
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -24,8 +24,6 @@ void vRead_DMA(void *pvParameters);
 
 uint8_t count_buffer_a;
 uint8_t count_buffer_b;
-uint16_t count_array_a;
-uint16_t count_array_b;
 uint8_t buffer_a_array[250];
 uint8_t buffer_b_array[250];
 
