@@ -89,7 +89,7 @@ void vPhase_Detection(void *pvParameters) // becomes peak array and position -> 
 				if (( check_phase_1 < 2 )||( check_phase_2 < 2 ))						/* check if theres no read out error with comparing low peak and high peak position of reference periode.*/
 				{
 				
-					 /*if(xSemaphoreTake( xGlobalProtocolBuffer_A_Key, portMAX_DELAY ))*/  /*taken out for testing */ 					{
+					 if(xSemaphoreTake( xGlobalProtocolBuffer_A_Key, portMAX_DELAY )) /* has to get deactivated, if only demodulating code has to be tested */					{
 						for (uci = 0; uci < 8; uci++)									/*For Schleife mit 8 Wiederholungen für 8 Byte */
 						{
 							for (ucj = 0; ucj < 4; ucj++)								/*For Schleife mit 4 Wiederholungen für 8 Bits (1Byte)*/
@@ -124,49 +124,50 @@ void vPhase_Detection(void *pvParameters) // becomes peak array and position -> 
 						}
 						ucx=0;
 						uca=0;
-						// xSemaphoreGive(xGlobalProtocolBuffer_A_Key);			/* taken out for testing */
+					 xSemaphoreGive(xGlobalProtocolBuffer_A_Key);			/* has to get deactivated, if only demodulating code has to be tested */
 					}
 					
-					//if(xSemaphoreTake( xGlobalProtocolBuffer_B_Key, portMAX_DELAY ))
-					//{
-						//for (ucl = 0; ucl < 8; ucl++)
-						//{
-							//for (ucm = 0; ucm < 4; ucm++)
-							//{
-								//ucvalue = phase_H[ucy];									/* result will get calculated from high peak array (low peak array is only used for checking deviations */
-								//ucy++;
-								//if((ucvalue < 10) && (ucvalue > 1))	/* 180° */
-								//{
-									//ucqambit = 0;
-									//check_peak_position = ucvalue * 4;
-								//}
-								//else if((ucvalue < 15) && (ucvalue > 9)) /* 270° */
-								//{
-									//ucqambit = 1;
-									//check_peak_position = ucvalue * 2;
-								//}
-								//else if((ucvalue < 19) && (ucvalue > 14)) /* 0° */
-								//{
-									//ucqambit = 2;
-									//check_peak_position = ucvalue * 4 / 3;
-								//}
-								//else if((ucvalue < 23) && (ucvalue > 18)) /* 90° */
-								//{
-									//ucqambit = 3;
-									//check_peak_position = ucvalue;
-								//}
-								//xOutput2 = (xOutput2 << 2) | (ucqambit & 0x03);
-							//}
-							//ucGlobalProtocolBuffer_B[ucb] = xOutput2;
-							//ucb++;
-							//xOutput2 = 0;
-						//}
-						//ucy=0;
-						//ucb=0;
-						//xSemaphoreGive(xGlobalProtocolBuffer_B_Key);
-					//}	
+					if(xSemaphoreTake( xGlobalProtocolBuffer_B_Key, portMAX_DELAY ))
+					{
+						for (ucl = 0; ucl < 8; ucl++)
+						{
+							for (ucm = 0; ucm < 4; ucm++)
+							{
+								ucvalue = phase_H[ucy];									/* result will get calculated from high peak array (low peak array is only used for checking deviations */
+								ucy++;
+								if((ucvalue < 10) && (ucvalue > 1))	/* 180° */
+								{
+									ucqambit = 0;
+									check_peak_position = ucvalue * 4;
+								}
+								else if((ucvalue < 15) && (ucvalue > 9)) /* 270° */
+								{
+									ucqambit = 1;
+									check_peak_position = ucvalue * 2;
+								}
+								else if((ucvalue < 19) && (ucvalue > 14)) /* 0° */
+								{
+									ucqambit = 2;
+									check_peak_position = ucvalue * 4 / 3;
+								}
+								else if((ucvalue < 23) && (ucvalue > 18)) /* 90° */
+								{
+									ucqambit = 3;
+									check_peak_position = ucvalue;
+								}
+								xOutput2 = (xOutput2 << 2) | (ucqambit & 0x03);
+							}
+							ucGlobalProtocolBuffer_B[ucb] = xOutput2;
+							ucb++;
+							xOutput2 = 0;
+						}
+						ucy=0;
+						ucb=0;
+						xSemaphoreGive(xGlobalProtocolBuffer_B_Key);
+					}	
 				}
 				
+				/* read out check */
 				else																	/* reference signal check failed */
 				{
 					/*read error is occured, phase_H and phase_L do not correspond to each other */		

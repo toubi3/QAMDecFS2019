@@ -92,7 +92,7 @@ void vWrite_Display(void *pvParameters){
 			vDisplayClear();
 			vDisplayWriteStringAtPos(0,0,"FreeRTOS 10.0.1");
 			vDisplayWriteStringAtPos(1,0,"a: %d b: %d",buffer_a[1],buffer_b[1]);
-			//vDisplayWriteStringAtPos(2,0,"H: %d L: %d ",high_peak, low_peak);
+			vDisplayWriteStringAtPos(2,0,"H: %d L: %d ",high_peak, low_peak);
 			//vDisplayWriteStringAtPos(3,0,"Control: %lu ",control_result );
 			//vDisplayWriteStringAtPos(3,0,"Hoi");
 			vTaskStartScheduler();

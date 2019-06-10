@@ -20,7 +20,7 @@
 #include "task.h"
 #include "errorHandler.h"
 
-uint8_t buffer_length = 63;
+uint8_t buffer_length = 64;
 
 //Initialisiert den ADC im Freerunning Mode
 void sys_InitADC(void)
@@ -28,32 +28,32 @@ void sys_InitADC(void)
 	
 	// Free Running mode: On
 	// Conversion mode: Unsigned, 8Bit
-	ADCB.CTRLB=(ADCB.CTRLB & (~(ADC_CONMODE_bm | ADC_FREERUN_bm | ADC_RESOLUTION_gm))) | ADC_RESOLUTION_8BIT_gc | ADC_FREERUN_bm;
+	ADCA.CTRLB=(ADCA.CTRLB & (~(ADC_CONMODE_bm | ADC_FREERUN_bm | ADC_RESOLUTION_gm))) | ADC_RESOLUTION_8BIT_gc | ADC_FREERUN_bm;
 	// Reference 1V and configuration of prescaler to 256
-	ADCB.PRESCALER=(ADCB.PRESCALER & (~ADC_PRESCALER_gm)) | ADC_PRESCALER_DIV256_gc; //?????
-	ADCB.REFCTRL = ADC_REFSEL_INT1V_gc | ADC_TEMPREF_bm;;			//internal 1V
+	ADCA.PRESCALER=(ADCA.PRESCALER & (~ADC_PRESCALER_gm)) | ADC_PRESCALER_DIV256_gc; //?????
+	ADCA.REFCTRL = ADC_REFSEL_INT1V_gc | ADC_TEMPREF_bm;;			//internal 1V
 
 	// Read and save the ADC offset using channel 0
-	ADCB.CH0.CTRL=(ADCB.CH0.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
-	ADCB.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc ;	// PORTB:0
+	ADCA.CH0.CTRL=(ADCA.CH0.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
+	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc ;	// PORTB:0
 	
-	ADCB.CH1.CTRL=(ADCB.CH1.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
-	ADCB.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc ;	// PORTB:1	
+	ADCA.CH1.CTRL=(ADCB.CH1.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
+	ADCA.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc ;	// PORTB:1	
 	
-	ADCB.CH2.CTRL = ADC_CH_GAIN_1X_gc | ADC_CH_INPUTMODE_INTERNAL_gc;
-	ADCB.CH2.MUXCTRL = ADC_CH_MUXINT_TEMP_gc;  //Temp Mux
+	ADCA.CH2.CTRL = ADC_CH_GAIN_1X_gc | ADC_CH_INPUTMODE_INTERNAL_gc;
+	ADCA.CH2.MUXCTRL = ADC_CH_MUXINT_TEMP_gc;  //Temp Mux
 	
-	ADCB.EVCTRL = ADC_SWEEP_012_gc;
+	ADCA.EVCTRL = ADC_SWEEP_012_gc;
 	
 	// Enable the ADC in order to read the offset
-	ADCB.CTRLA|=ADC_ENABLE_bm;
+	ADCA.CTRLA|=ADC_ENABLE_bm;
 }
 
 void vInitDMA()
 {
 	//ADC8 PB0 Input
-	PORTB.DIRCLR = PIN0_bm;
-	PORTB.DIRCLR = PIN1_bm;
+	PORTA.DIRCLR = PIN0_bm;
+	PORTA.DIRCLR = PIN1_bm;
 	
 	sys_InitADC();
 

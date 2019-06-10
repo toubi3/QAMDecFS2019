@@ -31,7 +31,7 @@ main.d main.o: .././main.c ../includes/avr_compiler.h \
  ../includes/errorHandler.h ../includes/NHD0420Driver.h \
  ../includes/double_buffer_read_out.h ../includes/read_peaks.h \
  ../includes/double_buffer_read_out.h ../includes/dma_config.h \
- ../includes/phase_detection.h
+ ../includes/phase_detection.h ../includes/phase_detection.h
 
 ../includes/avr_compiler.h:
 
@@ -128,5 +128,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../includes/double_buffer_read_out.h:
 
 ../includes/dma_config.h:
+
+../includes/phase_detection.h:
 
 ../includes/phase_detection.h:

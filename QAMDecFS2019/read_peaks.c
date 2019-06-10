@@ -17,9 +17,9 @@
 void vRead_Peaks(void *pvParameters)
 {
 	int high_peak_a = 127;
-	int high_peak = 127;
+	 high_peak = 127;
 	int low_peak_a = 127;
-	int low_peak = 127;
+	 low_peak = 127;
 	int count_array_a = 0;
 	int count_array_b = 0;
 	int count_array_position_H = 0, count_array_position_L = 0;
@@ -46,7 +46,7 @@ void vRead_Peaks(void *pvParameters)
 		if (uxBits & Process_Signal_BufferA)											/* if "BufferA" bit is set, read out bufferA*/
 		{
 			i = 0;
-			for(i=0;i<xtest_array_length;i++)
+			for(i=0;i<buffer_length;i++)
 			{
 				/* HIGH PEAK A*/
 				if(count_array_a >= peak_array_length)									/* check if a package is ready to transmit*/
@@ -61,13 +61,13 @@ void vRead_Peaks(void *pvParameters)
 				}
 				else
 				{
-					if (xtest_array[i] > 127)
+					if (buffer_a[i] > 127)
 					{
-						if (xtest_array[i] > high_peak)									/* after test use buffer_a		//		if buffer bigger than current high_peak*/
+						if (buffer_a[i] > high_peak)									/* after test use buffer_a		//		if buffer bigger than current high_peak*/
 						{
-							if (xtest_array[i] > 220)
+							if (buffer_a[i] > 220)
 							{
-								high_peak = xtest_array[i];								// store new peak
+								high_peak = buffer_a[i];								// store new peak
 								position_high_peak_a = i;								// store array position of new peak
 								flag_H = 1;
 								flag_L = 0;
@@ -75,11 +75,11 @@ void vRead_Peaks(void *pvParameters)
 						}
 						else
 						{
-							if (xtest_array[i] > 170 )
+							if (buffer_a[i] > 170 )
 							{
 								count_after_peak++;
 							}
-							else if(xtest_array[i] < 170)
+							else if(buffer_a[i] < 170)
 							{
 								if(flag_H == 1)
 								{
@@ -100,11 +100,11 @@ void vRead_Peaks(void *pvParameters)
 					// LOW PEAK	A
 					else
 					{
-						if (xtest_array[i] < low_peak)										/*if buffer bigger than current high_peak*/
+						if (buffer_a[i] < low_peak)										/*if buffer bigger than current high_peak*/
 						{
-							if (xtest_array[i] < 40)
+							if (buffer_a[i] < 40)
 							{
-								low_peak = xtest_array[i];									/* store new peak*/
+								low_peak = buffer_a[i];									/* store new peak*/
 								position_low_peak_a = i;									/* store array position of new peak*/
 								flag_L = 1;
 								flag_H = 0;
@@ -112,11 +112,11 @@ void vRead_Peaks(void *pvParameters)
 						}
 						else
 						{
-							if (xtest_array[i] < 85)
+							if (buffer_a[i] < 85)
 							{
 								count_after_peak++;
 							}
-							else if (xtest_array[i] > 88)
+							else if (buffer_a[i] > 88)
 							{
 								if (flag_L == 1)
 								{
@@ -139,7 +139,7 @@ void vRead_Peaks(void *pvParameters)
 		}
 		else if (uxBits & Process_Signal_BufferB)
 		{
-			for (i=0;i<xtest_array_length;i++)													/* after test will be variable buffer_length*/
+			for (i=0;i<buffer_length;i++)													/* after test will be variable buffer_length*/
 			{
 				if(count_array_b >= peak_array_length)											/* check if package ready to send*/
 				{
@@ -154,13 +154,13 @@ void vRead_Peaks(void *pvParameters)
 				else
 				{
 					/* HIGH PEAK B */
-					if (xtest_array[i] > 127)													/* after test: use variable buffer_b */
+					if (buffer_b[i] > 127)													/* after test: use variable buffer_b */
 					{
-						if (xtest_array[i] > high_peak)											/*if buffer bigger than current high_peak*/
+						if (buffer_b[i] > high_peak)											/*if buffer bigger than current high_peak*/
 						{
-							if (xtest_array[i] > 220)
+							if (buffer_b[i] > 220)
 							{
-								high_peak = xtest_array[i];										/* store new peak*/
+								high_peak = buffer_b[i];										/* store new peak*/
 								position_high_peak_a = i;										/* store array position of new peak*/
 								flag_H = 1;
 								flag_L = 0;
@@ -168,11 +168,11 @@ void vRead_Peaks(void *pvParameters)
 						}
 						else
 						{
-							if (xtest_array[i] > 170 )											
+							if (buffer_b[i] > 170 )											
 							{
 								count_after_peak++;
 							}
-							else if(xtest_array[i] < 170)
+							else if(buffer_b[i] < 170)
 							{
 								if(flag_H == 1)
 								{
@@ -193,11 +193,11 @@ void vRead_Peaks(void *pvParameters)
 					/* LOW PEAK	B*/
 					else
 					{
-						if (xtest_array[i] < low_peak)											/*if buffer bigger than current high_peak*/
+						if (buffer_b[i] < low_peak)											/*if buffer bigger than current high_peak*/
 						{
-							if (xtest_array[i] < 40)
+							if (buffer_b[i] < 40)
 							{
-								low_peak = xtest_array[i];										/* store new peak*/
+								low_peak = buffer_b[i];										/* store new peak*/
 								position_low_peak_a = i;										/* store array position of new peak*/
 								flag_L = 1;
 								flag_H = 0;
@@ -205,11 +205,11 @@ void vRead_Peaks(void *pvParameters)
 						}
 						else
 						{
-							if (xtest_array[i] < 88)
+							if (buffer_b[i] < 88)
 							{
 								count_after_peak++;
 							}
-							else if (xtest_array[i] > 85)
+							else if (buffer_b[i] > 85)
 							{
 								if (flag_L == 1)
 								{

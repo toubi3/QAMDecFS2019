@@ -31,7 +31,8 @@ phase_detection.d phase_detection.o: .././phase_detection.c \
  ../FreeRTOS/include/queue.h ../includes/mem_check.h ../includes/init.h \
  ../includes/utils.h ../includes/errorHandler.h \
  ../includes/NHD0420Driver.h ../includes/read_peaks.h \
- ../includes/double_buffer_read_out.h ../includes/dma_config.h
+ ../includes/double_buffer_read_out.h ../includes/dma_config.h \
+ ../includes/phase_detection.h
 
 ../includes/avr_compiler.h:
 
@@ -128,3 +129,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../includes/double_buffer_read_out.h:
 
 ../includes/dma_config.h:
+
+../includes/phase_detection.h:
