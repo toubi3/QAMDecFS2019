@@ -28,39 +28,39 @@ void sys_InitADC(void)
 	
 	// Free Running mode: On
 	// Conversion mode: Unsigned, 8Bit
-	ADCA.CTRLB=(ADCA.CTRLB & (~(ADC_CONMODE_bm | ADC_FREERUN_bm | ADC_RESOLUTION_gm))) | ADC_RESOLUTION_8BIT_gc | ADC_FREERUN_bm;
+	ADCB.CTRLB=(ADCB.CTRLB & (~(ADC_CONMODE_bm | ADC_FREERUN_bm | ADC_RESOLUTION_gm))) | ADC_RESOLUTION_8BIT_gc | ADC_FREERUN_bm;
 	// Reference 1V and configuration of prescaler to 256
-	ADCA.PRESCALER=(ADCA.PRESCALER & (~ADC_PRESCALER_gm)) | ADC_PRESCALER_DIV256_gc; //?????
-	ADCA.REFCTRL = ADC_REFSEL_INT1V_gc | ADC_TEMPREF_bm;;			//internal 1V
+	ADCB.PRESCALER=(ADCB.PRESCALER & (~ADC_PRESCALER_gm)) | ADC_PRESCALER_DIV8_gc; //?????
+	ADCB.REFCTRL = ADC_REFSEL_INT1V_gc | ADC_TEMPREF_bm;;			//internal 1V
 
 	// Read and save the ADC offset using channel 0
-	ADCA.CH0.CTRL=(ADCA.CH0.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
-	ADCA.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc ;	// PORTB:0
+	ADCB.CH0.CTRL=(ADCB.CH0.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
+	ADCB.CH0.MUXCTRL = ADC_CH_MUXPOS_PIN0_gc ;	// PORTB:0
 	
-	ADCA.CH1.CTRL=(ADCB.CH1.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
-	ADCA.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc ;	// PORTB:1	
+	ADCB.CH1.CTRL=(ADCB.CH1.CTRL & (~(ADC_CH_START_bm | ADC_CH_GAIN_gm | ADC_CH_INPUTMODE_gm))) | ADC_CH_INPUTMODE_SINGLEENDED_gc;
+	ADCB.CH1.MUXCTRL = ADC_CH_MUXPOS_PIN1_gc ;	// PORTB:1	
 	
-	ADCA.CH2.CTRL = ADC_CH_GAIN_1X_gc | ADC_CH_INPUTMODE_INTERNAL_gc;
-	ADCA.CH2.MUXCTRL = ADC_CH_MUXINT_TEMP_gc;  //Temp Mux
+	ADCB.CH2.CTRL = ADC_CH_GAIN_1X_gc | ADC_CH_INPUTMODE_INTERNAL_gc;
+	ADCB.CH2.MUXCTRL = ADC_CH_MUXINT_TEMP_gc;  //Temp Mux
 	
-	ADCA.EVCTRL = ADC_SWEEP_012_gc;
+	ADCB.EVCTRL = ADC_SWEEP_012_gc;
 	
 	// Enable the ADC in order to read the offset
-	ADCA.CTRLA|=ADC_ENABLE_bm;
+	ADCB.CTRLA|=ADC_ENABLE_bm;
 }
 
 void vInitDMA()
 {
 	//ADC8 PB0 Input
-	PORTA.DIRCLR = PIN0_bm;
-	PORTA.DIRCLR = PIN1_bm;
+	PORTB.DIRCLR = PIN0_bm;
+	PORTB.DIRCLR = PIN1_bm;
 	
 	sys_InitADC();
 
 	// set TCC1 to 11024Hz overflow, actually 11019.2838Hz (-0.052% error)
 	TCC1.CTRLA = 0; // stop if running
 	TCC1.CNT = 0;
-	TCC1.PER = 0x0FFF;
+	TCC1.PER = 1000-1;
 
 	EVSYS.CH0MUX = EVSYS_CHMUX_TCC1_OVF_gc; // trigger on timer overflow
 
@@ -77,13 +77,13 @@ void vInitDMA()
 	
 	// channel 0
 	// **** TODO: reset dma channels
-	DMA.CH0.REPCNT		= 0;
+	DMA.CH0.REPCNT		= 1;
 	DMA.CH0.CTRLA		=  DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 1 byte (8 bit word)
 	DMA.CH0.CTRLB		= 0x1;
 	DMA.CH0.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction
 	DMA.CH0.TRIGSRC		= DMA_CH_TRIGSRC_TCC1_OVF_gc;	//DMA0 gets synched by TCC1
-	DMA.CH0.TRFCNT		= 64; // always the number of bytes, even if burst length > 1
+	DMA.CH0.TRFCNT		= 32; // always the number of bytes, even if burst length > 1
 	DMA.CH0.DESTADDR0	= (( (uint16_t) buffer_a) >> 0) & 0xFF;
 	DMA.CH0.DESTADDR1	= (( (uint16_t) buffer_a) >> 8) & 0xFF;
 	DMA.CH0.DESTADDR2	= 0;
@@ -92,13 +92,13 @@ void vInitDMA()
 	DMA.CH0.SRCADDR2	= 0;
 
 	// channel 1
-	DMA.CH1.REPCNT		= 0;
+	DMA.CH1.REPCNT		= 1;
 	DMA.CH1.CTRLA		= DMA_CH_BURSTLEN_1BYTE_gc | DMA_CH_SINGLE_bm | DMA_CH_REPEAT_bm; // ADC result is 1 byte (8 bit word)
 	DMA.CH1.CTRLB		= 0x1;
 	DMA.CH1.ADDRCTRL	= DMA_CH_SRCRELOAD_BURST_gc | DMA_CH_SRCDIR_INC_gc | // reload source after every burst
 	DMA_CH_DESTRELOAD_TRANSACTION_gc | DMA_CH_DESTDIR_INC_gc; // reload destination after every transaction
 	DMA.CH1.TRIGSRC		= DMA_CH_TRIGSRC_TCC1_OVF_gc; //DMA1 gets synched by TCC1
-	DMA.CH1.TRFCNT		= 64; // always the number of bytes, even if burst length > 1
+	DMA.CH1.TRFCNT		= 32; // always the number of bytes, even if burst length > 1
 	DMA.CH1.DESTADDR0	= (( (uint16_t) buffer_b) >> 0) & 0xFF;
 	DMA.CH1.DESTADDR1	= (( (uint16_t) buffer_b) >> 8) & 0xFF;
 	DMA.CH1.DESTADDR2	= 0;
@@ -107,11 +107,24 @@ void vInitDMA()
 	DMA.CH1.SRCADDR2	= 0;
 
 	DMA.CH0.CTRLA		|= DMA_CH_ENABLE_bm;
-	TCC1.CTRLA			= TC_CLKSEL_DIV1024_gc; // start timer, and in turn ADC
+	//TCC1.INTCTRLA = 0x03;
+	TCC1.CTRLA			= TC_CLKSEL_DIV1_gc; // start timer, and in turn ADC
 
 		//Example for polling
 // 		while (!(DMA.INTFLAGS & DMA_CH0TRNIF_bm));
 // 		DMA.INTFLAGS = DMA_CH0TRNIF_bm;
+
+}
+
+ISR(TCC1_OVF_vect)
+{	
+	static volatile i = 0;
+	i++;
+	if(i == 32-1)
+	{
+		//PORTF.OUTTGL = 0x01;
+		i = 0;
+	}
 
 }
 
@@ -121,7 +134,8 @@ ISR(DMA_CH0_vect)
 	//Interrupt quittieren
 	DMA.CH0.CTRLB |= 0x10;
 	TCC1.INTFLAGS |= 0x01;
-	//PORTF.OUTTGL = 0x01;
+	PORTF.OUTTGL = 0x01;
+	
 		
 	BaseType_t xHigherPriorityTaskWoken, xResult;
 

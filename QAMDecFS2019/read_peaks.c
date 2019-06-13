@@ -10,16 +10,16 @@
 #include "read_peaks.h"
 #include "errorHandler.h"
 
-#define peak_array_length 32
+#define peak_array_length 2
 
 
 
 void vRead_Peaks(void *pvParameters)
 {
 	int high_peak_a = 127;
-	 high_peak = 127;
+	int high_peak = 127;
 	int low_peak_a = 127;
-	 low_peak = 127;
+	int low_peak = 127;
 	int count_array_a = 0;
 	int count_array_b = 0;
 	int count_array_position_H = 0, count_array_position_L = 0;

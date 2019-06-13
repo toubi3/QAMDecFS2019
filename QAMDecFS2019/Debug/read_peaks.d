@@ -27,8 +27,7 @@ read_peaks.d read_peaks.o: .././read_peaks.c ../includes/read_peaks.h \
  ../FreeRTOS/include/list.h ../FreeRTOS/include/queue.h \
  ../FreeRTOS/include/event_groups.h ../FreeRTOS/include/timers.h \
  ../FreeRTOS/include/task.h ../includes/double_buffer_read_out.h \
- ../includes/dma_config.h ../includes/phase_detection.h \
- ../includes/errorHandler.h
+ ../includes/dma_config.h ../includes/errorHandler.h
 
 ../includes/read_peaks.h:
 
@@ -101,7 +100,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../includes/double_buffer_read_out.h:
 
 ../includes/dma_config.h:
-
-../includes/phase_detection.h:
 
 ../includes/errorHandler.h:

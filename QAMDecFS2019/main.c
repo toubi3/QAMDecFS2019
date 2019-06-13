@@ -55,6 +55,9 @@ int main(void)
 	vInitClock();
 	vInitDisplay();
 	
+	PORTF.DIRSET = PIN0_bm; /*LED1*/
+	PORTE.DIRSET = PIN3_bm; /*LED1*/
+	
 	xTaskCreate( vLedBlink, (const char *) "ledBlink", configMINIMAL_STACK_SIZE+10, NULL, 1, &ledTask);
 	xTaskCreate( vRead_Peaks, (const char *) "read_Peaks", configMINIMAL_STACK_SIZE+100, NULL, 1, &my_read_Peaks);
 	xTaskCreate( vPhase_Detection, (const char *) "phase_detect", configMINIMAL_STACK_SIZE+10, NULL, 1, &my_phase_detection);
@@ -75,7 +78,7 @@ int main(void)
 
 void vLedBlink(void *pvParameters) {
 	(void) pvParameters;
-	PORTE.DIRSET = PIN3_bm; /*LED1*/
+	
 	PORTE.OUT = 0x08;
 	for(;;) {
 		PORTE.OUTTGL = 0x08;				
@@ -92,7 +95,7 @@ void vWrite_Display(void *pvParameters){
 			vDisplayClear();
 			vDisplayWriteStringAtPos(0,0,"FreeRTOS 10.0.1");
 			vDisplayWriteStringAtPos(1,0,"a: %d b: %d",buffer_a[1],buffer_b[1]);
-			vDisplayWriteStringAtPos(2,0,"H: %d L: %d ",high_peak, low_peak);
+			//vDisplayWriteStringAtPos(2,0,"H: %d L: %d ",high_peak, low_peak);
 			//vDisplayWriteStringAtPos(3,0,"Control: %lu ",control_result );
 			//vDisplayWriteStringAtPos(3,0,"Hoi");
 			vTaskStartScheduler();

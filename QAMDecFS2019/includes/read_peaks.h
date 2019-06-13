@@ -17,8 +17,6 @@
 #define Process_Phase_detectionA ( 1 << 0 )
 #define Process_Phase_detectionB ( 1 << 1 )
 
-extern int high_peak;
-extern int low_peak;
 int position_array_H[64];
 int position_array_L[64];
 
